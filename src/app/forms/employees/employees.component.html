@@ -1,0 +1,36 @@
+
+<loader [observables]="[this.loading]"></loader>
+    
+<div style="margin: 50px 200px; max-width: 500px; margin-left: auto; margin-right: auto;">
+    <mat-form-field>
+        <mat-label>Filter</mat-label>
+        <input matInput [formControl]="searchCtrl">
+      </mat-form-field>
+    <table *ngIf="dataSource.data && dataSource.data.length > 0" mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+        
+        <ng-container matColumnDef="employeeName">
+            <th mat-header-cell *matHeaderCellDef> Name </th>
+            <td mat-cell *matCellDef="let employee"> {{employee.name}} </td>
+        </ng-container>
+    
+        <ng-container matColumnDef="totalTime">
+            <th mat-header-cell *matHeaderCellDef> Total Time in Month </th>
+            <td mat-cell *matCellDef="let employee"> {{employee.totalTime}} hrs</td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef> Actions </th>
+            <td mat-cell *matCellDef="let employee">
+                <button type="button" mat-button color="warn" [routerLink]="['/edit/'+ employee.id]">Edit</button>
+            </td>
+        </ng-container>
+      
+        <tr class="redHeader" mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr [ngClass]="{'redBg': row.totalTime < 100}" mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+      <div>
+        <div *ngIf="dataSource.data && dataSource.data.length <= 0" class="empty-label">
+           No data
+        </div>
+      </div>
+</div>
