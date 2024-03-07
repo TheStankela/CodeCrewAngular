@@ -15,6 +15,25 @@ import { ApexChart, ApexLegend, ApexNonAxisChartSeries } from 'ng-apexcharts';
   styleUrl: './employees.component.scss'
 })
 export class EmployeesComponent implements OnInit{
+
+//#region Charts
+  employeeNames: string[] = []
+  totalTimes: number[] = []
+  chartSeries: ApexNonAxisChartSeries = []
+  labels: string[] = []
+
+  legend: ApexLegend = {
+    position: "bottom"
+  }
+
+  chartDetails: ApexChart = {
+    type: 'pie',
+    toolbar: {
+      show: false
+    },
+  }
+//#endregion
+
   searchCtrl = new FormControl();
 
   displayedColumns: string[] = ['employeeName', 'totalTime', 'actions'];
@@ -29,6 +48,7 @@ export class EmployeesComponent implements OnInit{
   @ViewChild(MatPaginator) paginator: MatPaginator;
   
   constructor(private _employeeService: EmployeeService){
+
   }
 
   ngOnInit(): void {
@@ -47,6 +67,13 @@ export class EmployeesComponent implements OnInit{
     this._employeeService.GetAllTimeEntries().WithLoader(this._loading).subscribe({
       next: res => {
         this.dataSource.data = res.sort((a, b) => b.totalTime - a.totalTime);
+
+        res.map(x => {
+          this.employeeNames.push(x.name)
+          this.totalTimes.push(x.totalTime)
+        })
+        this.chartSeries = this.totalTimes;
+        this.labels = this.employeeNames;
       },
       error: err => {
         this.dataSource.data = [];
@@ -72,5 +99,14 @@ export class EmployeesComponent implements OnInit{
     value = value.trim();
     value = value.toLowerCase();
     this.dataSource.filter = value;
+  }
+}
+class PieData {
+  name: string;
+  data: number
+
+  constructor(name: string, data: number){
+    this.name = name;
+    this.data = data;
   }
 }
